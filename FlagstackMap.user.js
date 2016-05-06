@@ -2,7 +2,7 @@
 // @name        FlagstackMap
 // @namespace   flagstackmap.rocka.de
 // @include     https://www.flagstack.net/map*
-// @version     1
+// @version     1.0.1
 // @grant       unsafeWindow
 // @grant       GM_getValue
 // @grant       GM_setValue
@@ -16,6 +16,10 @@
 // * Total score display
 // * GPX Export: save visible Flags to a file for offline use
 // * change URL when clicking on Flag (reload to last shown Flag)
+
+// History:
+// 1.0.1
+// * added POI flags
 
 
 (function () {
@@ -84,6 +88,12 @@
 				name: 'Team Flag',
 				score: 0
 			},
+			poi:{
+				rgx:/_poi_/,
+				name:"POI",
+				score_min:8,
+				score_max:40
+			},
 			querfeldein_deutschland: {
 				rgx: /\/(736699|7367(05|11|19|32|33)|10905(22|31|47|52|68|98)|10906(03|09|21|39))_/,
 				name: 'Querfeldein durch Deutschland',
@@ -111,7 +121,7 @@
 		groups = {
 			physical: ['treasure'],
 			virtual: ['green', 'system', 'white', 'personal', 'oracle', 'premium', 'company', 'party'],
-			special: ['querfeldein_deutschland']
+			special: ['querfeldein_deutschland','poi']
 		},
 		scoreElem,
 		tmpl_gpx = '<?xml version="1.0" encoding="UTF-8" standalone="yes" ?><gpx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.1" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns="http://www.topografix.com/GPX/1/1" xmlns:rmc="urn:net:trekbuddy:1.0:nmea:rmc" creator="MunzeeMapNG" xmlns:wptx1="http://www.garmin.com/xmlschemas/WaypointExtension/v1" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd http://www.garmin.com/xmlschemas/GpxExtensions/v3 http://www.garmin.com/xmlschemas/GpxExtensionsv3.xsd http://www.garmin.com/xmlschemas/TrackPointExtension/v1 http://www.garmin.com/xmlschemas/TrackPointExtensionv1.xsd http://www.garmin.com/xmlschemas/WaypointExtension/v1 http://www.garmin.com/xmlschemas/WaypointExtensionv1.xsd" xmlns:gpxx="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns:ql="http://www.qlandkarte.org/xmlschemas/v1.1"><metadata><time><%time></time></metadata><%wpts><extensions/></gpx>',
